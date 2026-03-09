@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransacaoController;
 use Laravel\Fortify\Features;
 
-Route::inertia('/', 'welcome', [
+Route::inertia('/', '/extrato', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
 
@@ -13,5 +13,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/extrato', [TransacaoController::class, 'index']);
+
+Route::post('/extrato', [TransacaoController::class, 'store']);
+
+Route::patch('/extrato', [TransacaoController::class, 'update']);
 
 require __DIR__.'/settings.php';

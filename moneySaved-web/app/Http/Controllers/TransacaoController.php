@@ -12,7 +12,7 @@ class TransacaoController extends Controller
 {
     public function index()
     {
-        $transacoes = Transacao::orderBy('data', 'desc')->get();
+        $transacoes = Transacao::orderBy('data', 'asc')->get();
 
         $totalGasto = $transacoes->where('tipo', 'saida')->sum('valor');
         
@@ -20,11 +20,16 @@ class TransacaoController extends Controller
             return [
                 'id' => $transacao->id,
                 'descricao' => $transacao->descricao,
-                'valor' => number_format($transacao->valor, 2, ',', '.'),
+                
+                'valor_formatado' => number_format($transacao->valor, 2, ',', '.'),
+                'data_formatada' => $transacao->data->format('d/m/Y H:i'),
+                'dia' => $transacao->data->format('d'),
+                
+                'valor' => $transacao->valor,
+                'data' => $transacao->data->format('Y-m-d'),
+    
                 'tipo' => $transacao->tipo,
                 'categoria' => $transacao->categoria,
-                'data' => $transacao->data->format('d/m/Y H:i'), 
-                'dia' => $transacao->data->format('d'), 
                 'mes_ano' => ucfirst($transacao->data->translatedFormat('F Y'))
             ];
         })->groupBy('mes_ano');
@@ -48,6 +53,23 @@ class TransacaoController extends Controller
         ]);
 
         Transacao::create($validated);
+
+        return redirect()->back();
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'descricao' => 'required|string|max:255',
+            'valor'     => 'required|numeric',
+            'tipo'      => 'required|in:entrada,saida',
+            'categoria' => 'nullable|string',
+            'data'      => 'required|date',
+        ]);
+
+        $transacao = Transacao::findOrFail($id);
+
+        $transacao->update($validated);
 
         return redirect()->back();
     }
