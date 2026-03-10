@@ -12,4 +12,6 @@ export interface Transacao {
     
     tipo: 'entrada' | 'saida';
     categoria: string | null;
+    forma_pagamento: 'credito' | 'debito' | 'pix' | 'dinheiro';
+    parcelas: number | null;
 }

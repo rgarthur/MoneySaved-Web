@@ -14,6 +14,8 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
         valor: '',
         data: '',
         tipo: 'saida',
+        forma_pagamento: 'debito',
+        parcelas: '',
     });
 
     useEffect(() => {
@@ -23,6 +25,8 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
                 valor: transacaoSelecionada.valor.toString(), 
                 data: transacaoSelecionada.data, 
                 tipo: transacaoSelecionada.tipo,
+                forma_pagamento: transacaoSelecionada.forma_pagamento,
+                parcelas: transacaoSelecionada.parcelas ? transacaoSelecionada.parcelas.toString() : '',
             });
         } else {
             reset(); 
@@ -88,6 +92,7 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
                                 required 
                                 type="number" 
                                 step="0.01"
+                                min={"0.01"}
                                 value={data.valor}
                                 onChange={(e) => setData('valor', e.target.value)}
                                 placeholder="0,00" 
@@ -121,6 +126,38 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
                         </select>
                         {errors.tipo && <span className="text-xs text-red-500">{errors.tipo}</span>}
                     </div>
+
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-sm font-medium text-gray-700">Formato da Transacao</label>
+                        <select 
+                            value={data.forma_pagamento}
+                            onChange={(e) => setData('forma_pagamento', e.target.value)}
+                            className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        >
+                            <option value="debito">Débito</option>
+                            <option value="credito">Crédito</option>
+                            <option value="pix">Pix</option>
+                            <option value="dinheiro">Dinheiro</option>
+                        </select>
+                        {errors.forma_pagamento && <span className="text-xs text-red-500">{errors.forma_pagamento}</span>}
+                    </div>
+                    {data.forma_pagamento === 'credito' &&( 
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-sm font-medium text-gray-700">Parcelas</label>
+                                <input 
+                                    required 
+                                    type="number" 
+                                    step="1"
+                                    min={"1"}
+                                    value={data.parcelas}
+                                    onChange={(e) => setData('parcelas', e.target.value)}
+                                    placeholder="1x, 2x, 3x..." 
+                                    className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                                />
+                            {errors.parcelas && <span className="text-xs text-red-500">{errors.parcelas}</span>}
+                        </div>
+                    )}
+
                     <div className="mt-2 flex gap-3 pt-4 border-t border-gray-100">
                         
                         {isEditing && (

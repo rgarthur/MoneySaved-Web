@@ -17,6 +17,8 @@ return new class extends Migration
             $table->decimal('valor', 10, 2); 
             $table->string('categoria')->nullable(); 
             $table->string('tipo')->nullable();
+            $table->string('forma_pagamento')->nullable();
+            $table->integer('parcelas')->nullable();
             $table->timestamp('data');
             $table->timestamps();
         });

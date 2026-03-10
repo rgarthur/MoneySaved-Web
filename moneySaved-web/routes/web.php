@@ -18,4 +18,6 @@ Route::post('/extrato', [TransacaoController::class, 'store']);
 
 Route::put('/extrato/{id}', [TransacaoController::class, 'update']);
 
+Route::delete('/extrato/{id}', [TransacaoController::class, 'destroy']);
+
 require __DIR__.'/settings.php';

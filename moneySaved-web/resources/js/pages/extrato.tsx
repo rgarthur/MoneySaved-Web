@@ -11,7 +11,7 @@ interface Props {
 }
  
 
-export default function Extrato({ extratosPorMes, mesAtual }: Props) {
+export default function Extrato({ extratosPorMes, mesAtual, totalGasto }: Props) {
     const [isModalTransacaoOpen, setIsModalTransacaoOpen] = useState(false);
     const [transacaoSelecionada, setTransacaoSelecionada] = useState<Transacao | null>(null);
 

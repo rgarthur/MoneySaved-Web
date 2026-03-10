@@ -11,6 +11,8 @@ class Transacao extends Model
         'valor',
         'categoria',
         'tipo',
+        'forma_pagamento',
+        'parcelas',
         'data',
     ];
 
