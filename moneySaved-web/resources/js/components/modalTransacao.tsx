@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'; // Adicione o useEffect
+import React, { useEffect } from 'react'; 
 import { useForm } from '@inertiajs/react';
 import { Transacao } from '@/interfaces/interfaceTransacao';
 

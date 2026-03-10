@@ -36,16 +36,11 @@ export default function Extrato({ extratosPorMes, mesAtual }: Props) {
                     <h3 className="text-xl font-bold capitalize">{mesAtual}</h3>
                     
                     <div className="flex justify-between ">
-                        <button onClick={() => abrirModalCriar} className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded transition-colors">
+                        <button onClick={abrirModalCriar} className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded transition-colors">
                             + Nova Transação
                         </button>
                     </div>
                 </div>
-                <ModalTransacao 
-                    isOpen={isModalTransacaoOpen} 
-                    onClose={() => setIsModalTransacaoOpen(false)} 
-                    transacaoSelecionada={transacaoSelecionada} 
-                />
                 <table className="min-w-full bg-white border rounded-2xl">
                     <thead>
                         <tr className='text-black'>
@@ -57,7 +52,7 @@ export default function Extrato({ extratosPorMes, mesAtual }: Props) {
                     <tbody>
                         {temTransacoesNoMesAtual ? (
                             extratosPorMes[mesAtual].map((transacao) => (
-                                <tr key={transacao.id} onClick={() => abrirModalEditar} className='text-black cursor-pointer hover:bg-white/5 transition-colors'>
+                                <tr key={transacao.id} onClick={() => abrirModalEditar(transacao)} className='text-black cursor-pointer hover:bg-white/5 transition-colors'>
                                     <td className="border px-4 py-2">{transacao.dia}</td>
                                     <td className="border px-4 py-2">{transacao.descricao}</td>
                                     <td className={`border px-4 py-2 ${transacao.tipo === 'saida' ? 'text-red-500' : 'text-green-500'}`}>R$ {transacao.valor}</td>
@@ -73,6 +68,11 @@ export default function Extrato({ extratosPorMes, mesAtual }: Props) {
                     </tbody>
                 </table>
             </section>
+            <ModalTransacao 
+                isOpen={isModalTransacaoOpen} 
+                onClose={() => setIsModalTransacaoOpen(false)} 
+                transacaoSelecionada={transacaoSelecionada} 
+            />
         </div>
     );
 }

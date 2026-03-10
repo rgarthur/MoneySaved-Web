@@ -16,6 +16,6 @@ Route::get('/extrato', [TransacaoController::class, 'index']);
 
 Route::post('/extrato', [TransacaoController::class, 'store']);
 
-Route::patch('/extrato', [TransacaoController::class, 'update']);
+Route::put('/extrato/{id}', [TransacaoController::class, 'update']);
 
 require __DIR__.'/settings.php';

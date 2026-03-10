@@ -73,4 +73,5 @@ class TransacaoController extends Controller
 
         return redirect()->back();
     }
+
 }
