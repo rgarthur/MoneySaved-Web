@@ -3,17 +3,31 @@ import Header from '../components/header'
 import { useState } from 'react';
 import ModalTransacao from '@/components/modalTransacao';
 import { Transacao } from '@/interfaces/interfaceTransacao';
+import { router } from '@inertiajs/react';
 
 interface Props {
-    extratosPorMes: Record<string, Transacao[]>;
-    totalGasto: number;
+    transacoes: Transacao[];
+    totalGasto: string;
     mesAtual: string;
+    filtroAtual: string;
 }
  
 
-export default function Extrato({ extratosPorMes, mesAtual, totalGasto }: Props) {
+export default function Extrato({ transacoes, mesAtual, totalGasto, filtroAtual }: Props) {
     const [isModalTransacaoOpen, setIsModalTransacaoOpen] = useState(false);
     const [transacaoSelecionada, setTransacaoSelecionada] = useState<Transacao | null>(null);
+
+    const handleMesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const valor = e.target.value; 
+        if (!valor) return;
+
+        const [ano, mes] = valor.split('-');
+
+        router.get('/extrato', { mes, ano }, {
+            preserveState: true,
+            replace: true
+        });
+    };
 
     const abrirModalCriar = () => {
         setTransacaoSelecionada(null);
@@ -25,7 +39,7 @@ export default function Extrato({ extratosPorMes, mesAtual, totalGasto }: Props)
         setIsModalTransacaoOpen(true);
     };
 
-    const temTransacoesNoMesAtual = extratosPorMes[mesAtual] && extratosPorMes[mesAtual].length > 0;
+    const temTransacoes = transacoes.length > 0;
 
     return (
         <div className='h-screen flex flex-col'>
@@ -35,9 +49,18 @@ export default function Extrato({ extratosPorMes, mesAtual, totalGasto }: Props)
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-bold capitalize">{mesAtual}</h3>
                     
-                    <div className="flex justify-between ">
+                    <div className="flex gap-4">
+                        <input 
+                            type="date"     
+                            value={filtroAtual}
+                            onChange={handleMesChange}
+                            className="bg-white text-black px-4 py-2 rounded font-bold outline-none focus:ring-2 focus:ring-blue-500"
+                        />
                         <button onClick={abrirModalCriar} className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded transition-colors">
                             + Nova Transação
+                        </button>
+                        <button className="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded transition-colors">
+                            Adicionar Banco
                         </button>
                     </div>
                 </div>
@@ -50,8 +73,8 @@ export default function Extrato({ extratosPorMes, mesAtual, totalGasto }: Props)
                         </tr>
                     </thead>
                     <tbody>
-                        {temTransacoesNoMesAtual ? (
-                            extratosPorMes[mesAtual].map((transacao) => (
+                        {temTransacoes ? (
+                            transacoes.map((transacao) => (
                                 <tr key={transacao.id} onClick={() => abrirModalEditar(transacao)} className='text-black cursor-pointer hover:bg-white/5 transition-colors'>
                                     <td className="border px-4 py-2">{transacao.dia}</td>
                                     <td className="border px-4 py-2">{transacao.descricao}</td>

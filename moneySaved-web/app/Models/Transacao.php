@@ -9,11 +9,13 @@ class Transacao extends Model
     protected $fillable = [
         'descricao',
         'valor',
-        'categoria',
         'tipo',
         'forma_pagamento',
         'parcelas',
         'data',
+        'group_id',
+        'instituicao',
+        'logo_path',
     ];
 
     protected $casts = [

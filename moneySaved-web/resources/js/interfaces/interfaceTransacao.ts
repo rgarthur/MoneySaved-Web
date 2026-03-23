@@ -14,4 +14,8 @@ export interface Transacao {
     categoria: string | null;
     forma_pagamento: 'credito' | 'debito' | 'pix' | 'dinheiro';
     parcelas: number | null;
+
+    group_id: string;
+    instituicao: string;
+    logo_path: string;
 }

@@ -15,7 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/extrato', [TransacaoController::class, 'index']);
 
 Route::post('/extrato', [TransacaoController::class, 'store']);
-
+    
 Route::put('/extrato/{id}', [TransacaoController::class, 'update']);
 
 Route::delete('/extrato/{id}', [TransacaoController::class, 'destroy']);

@@ -16,6 +16,7 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
         tipo: 'saida',
         forma_pagamento: 'debito',
         parcelas: '',
+        instituicao: '',
     });
 
     useEffect(() => {
@@ -27,6 +28,7 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
                 tipo: transacaoSelecionada.tipo,
                 forma_pagamento: transacaoSelecionada.forma_pagamento,
                 parcelas: transacaoSelecionada.parcelas ? transacaoSelecionada.parcelas.toString() : '',
+                instituicao: transacaoSelecionada.instituicao || '',
             });
         } else {
             reset(); 
@@ -36,7 +38,7 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (transacaoSelecionada) {
+        if (transacaoSelecionada) {;
             put(`/extrato/${transacaoSelecionada.id}`, {
                 onSuccess: () => onClose(),
             });
@@ -48,10 +50,21 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
     };
 
     const handleDeletar = () => {
-        if (confirm('Tem certeza que deseja apagar esta transação?')) {
-            destroy(`/extrato/${transacaoSelecionada?.id}`, {
-                onSuccess: () => onClose(),
-            });
+        if (transacaoSelecionada && transacaoSelecionada.parcelas && transacaoSelecionada.parcelas > 1) {
+            if (confirm('Atenção: Esta é uma transação parcelada. Deseja prosseguir com a exclusão?')) {
+                const apagarTodas = confirm('Clique em "OK" para apagar TODAS as parcelas futuras desta compra, ou em "Cancelar" para apagar APENAS esta parcela deste mês.');
+                console.log(transacaoSelecionada.group_id), 
+                destroy(`/extrato/${transacaoSelecionada.id}?todas=${apagarTodas}`, {
+                    onSuccess: () => onClose(),
+                });
+            }
+            
+        } else {
+            if (confirm('Tem certeza que deseja apagar esta transação?')) {
+                destroy(`/extrato/${transacaoSelecionada?.id}`, {
+                    onSuccess: () => onClose(),
+                });
+            }
         }
     };
 
@@ -61,6 +74,7 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
 
     if (!isOpen) return null;
 
+    console.log(errors)
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={handleClose}>
             <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-gray-200" onClick={(e) => e.stopPropagation()}>
@@ -141,6 +155,26 @@ export default function ModalTransacao({ isOpen, onClose, transacaoSelecionada }
                         </select>
                         {errors.forma_pagamento && <span className="text-xs text-red-500">{errors.forma_pagamento}</span>}
                     </div>
+
+                    {data.forma_pagamento !== 'dinheiro' && (
+                        <div className="flex gap-4">
+                            <div className="flex flex-col gap-1.5 w-1/2">
+                                <label className="text-sm font-medium text-gray-700">Instituição</label>
+                                <input
+                                    type="text"
+                                    value={data.instituicao}
+                                    onChange={(e) => setData('instituicao', e.target.value)}
+                                    className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1.5 w-1/2">
+                                <svg>
+
+                                </svg>
+                            </div>
+                        </div>
+                    )}
+
                     {data.forma_pagamento === 'credito' &&( 
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm font-medium text-gray-700">Parcelas</label>
